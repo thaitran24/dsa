@@ -1,0 +1,76 @@
+template <class T>
+Node<T>* split(Node<T>** start, Node<T>** end) {
+    Node<T>* iter1 = *start;
+    Node<T>* iter2 = iter1;
+
+    while (iter1 && iter2 && iter2 != *end) {
+cout << "iter1: ";
+print(iter1);
+cout << "iter2: ";
+print(iter2);
+        iter2 = iter2->next;
+        if (iter2->next == nullptr) {
+            iter2 = iter2->next;
+            break;
+        }
+        iter2 = iter2->next;
+        iter1 = iter1->next;
+    }
+    Node<T>* res = iter1->next;
+    iter1->next = nullptr;
+
+cerr << "start: ";
+print(*start);
+cerr << "res: ";
+print(res);
+
+    return res;
+}
+
+template <class T>
+Node<T>* merge(List<T>& list, Node<T>* list1, Node<T>* list2) {
+    Node<T>* head = nullptr;
+    Node<T>* temp = nullptr;
+    if (list1->value < list2->value) {
+        head = list1;
+        list1 = list1->next;
+    }
+    else {
+        head = list2;
+        list2 = list2->next;
+    }
+
+    temp = head;
+
+    while (list1 && list2) {
+        if (list1->value < list2->value) {
+            temp->next = list1;
+            temp = list1;
+            list1 = list1->next;
+            temp->next = nullptr;
+        }
+        else {
+            temp->next = list2;
+            temp = list2;
+            list2 = list2->next;
+            temp->next = nullptr;
+        }
+    }
+    
+    if (list1) temp->next = list1;
+    else temp->next = list2;
+    return head;
+}
+
+template <class T>
+void mergeSort(List<T>& list, Node<T>** start, Node<T>** end) {
+    Node<T>** head = &(list.head);
+    Node<T>** tail = &(list.tail);
+    Node<T>* mid = split(head, tail);
+    Node<T>* next = mid->next;
+    if (mid == *start) return;
+
+    mergeSort(list, start, &mid);
+    // mergeSort(list, &next, end);
+    merge(list, *start, *end);
+}
